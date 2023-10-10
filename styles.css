@@ -1,0 +1,204 @@
+cite {
+    font-size: medium;
+    display: block;
+    white-space: nowrap;
+    border-right: 2px solid;
+    width: 22ch;
+    animation: typing 5s steps(21), blink .5s step-end infinite alternate;
+    overflow: hidden;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+.pt-10 {
+    padding-top: 10px !important;
+}
+
+.pb-10 {
+    padding-bottom: 10px !important;
+}
+
+.mt-10 {
+    margin-top: 10px !important;
+}
+
+.txt-center {
+    text-align: center;
+}
+
+.no_underline {
+    text-decoration: none;
+}
+
+
+#label_switch {
+    width: 60px;
+    height: 30px;
+    position: relative;
+    display: block;
+    background: #ebebeb;
+    border-radius: 11px;
+    box-shadow: inset 0px 5px 7px rgba(0, 0, 0, 0.4), inset 0px -5px 7px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+#label_switch:after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: linear-gradient(120deg, #ffcc89, #d8860b);
+    border-radius: 20px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+#input_switch {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+#input_switch:checked+#label_switch {
+    background: #242424;
+}
+
+#input_switch:checked+#label_switch:after {
+    left: 55px;
+    transform: translateX(-100%);
+    background: linear-gradient(120deg, #777, #3a3a3a);
+}
+
+#label_switch,
+#label_switch:after {
+    transition: 0.3s
+}
+
+#label_switch:active:after {
+    width: 5px;
+}
+
+nav {
+    padding-left: 30px;
+    padding-right: 30px;
+    background: #141e26;
+}
+
+.btn_driver {
+    background-color: #3c7c74;
+    color: #ffff;
+    border: 1px solid #ebebeb;
+}
+
+.btn_driver:hover {
+    transform: translateY(-4px) translateX(-2px);
+    box-shadow: 5px 8px 0 0 rgb(255, 255, 255);
+}
+
+
+.btn_student {
+    background-color: #c3b065;
+    color: #ffff;
+    border: 1px solid #ebebeb;
+}
+
+.btn_student:hover {
+    transform: translateY(-4px) translateX(-2px);
+    box-shadow: 5px 8px 0 0 rgb(255, 255, 255);
+}
+
+.logo_img {
+    width: 40px;
+    filter: drop-shadow(0px 5px 10px rgba(74, 224, 214, 0.743));
+}
+
+
+.btn_go {
+    font-size: 20px;
+    background: rgb(214, 214, 214);
+    color: #141e26;
+    padding: 0.3em 1em;
+    padding-left: 5em;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn_go span {
+    display: block;
+    margin-left: 0.3em;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn_go svg {
+    display: block;
+    transform-origin: center center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.btn_go:hover svg {
+    transform: translateX(1.2em) rotate(0deg) scale(1.1);
+}
+
+.btn_go:hover span {
+    transform: translateX(8em);
+}
+
+@keyframes fly-1 {
+    from {
+        transform: translateY(0.0em);
+    }
+
+    to {
+        transform: translateY(0.1em);
+    }
+}
+
+h4 {
+    font-size: 1.2em;
+    font-weight: 200px;
+    color: #dadada;
+    letter-spacing: 1px;
+}
+
+h4 span {
+    transition: 0.5s;
+}
+
+h4:hover span:nth-child(1) {
+    margin-right: 2px;
+}
+
+h4:hover span:nth-child(2) {
+    margin-left: 2px;
+}
+
+h4:hover span:nth-child(1)::after {
+    content: "🗺️​";
+}
+
+h4:hover span {
+    color: #0bddc4;
+    text-shadow: 0 0 10px #0bddc4,
+        0 0 20px #0bddc4,
+        0 0 40px #0bddc4,
+        0 0 80px #0bddc4,
+        0 0 120px #0bddc4,
+        0 0 160px #0bddc4,
+    ;
+}
