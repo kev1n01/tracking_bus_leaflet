@@ -224,4 +224,4 @@ const endDriver = () => {
 if (driver_id !== null) {
     logoutButton.addTo(map)
 }
-console.log('%cSolo mirar no, tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');
+console.log('%cSolo mirar, no tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');
