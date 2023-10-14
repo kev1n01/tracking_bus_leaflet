@@ -1,3 +1,35 @@
+#toggle {
+    position: relative;
+    display: block;
+    width: 35px;
+    height: 18px;
+    border-radius: 16px;
+    background: #dadada;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+#toggle .indicator {
+    position: absolute;
+    top: -26.5px;
+    left: -26px;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(to bottom, #264161, #426085);
+    border-radius: 50%;
+    transform: scale(0.2);
+    transition: 0.2s;
+}
+
+#toggle.active {
+    background: #264161;
+}
+
+#toggle.active .indicator {
+    left: -9px;
+    background: linear-gradient(to bottom, #ffffff, #cbcbcb);
+}
+
 cite {
     font-size: medium;
     display: block;
@@ -43,7 +75,6 @@ cite {
 nav {
     padding-left: 30px;
     padding-right: 30px;
-    background: #141e26;
 }
 
 .btn_driver {
@@ -56,7 +87,6 @@ nav {
     transform: translateY(-4px) translateX(-2px);
     box-shadow: 5px 8px 0 0 rgb(255, 255, 255);
 }
-
 
 .btn_student {
     background-color: #c3b065;
@@ -71,16 +101,17 @@ nav {
 
 .logo_img {
     width: 40px;
-    filter: drop-shadow(0px 5px 10px rgba(74, 224, 214, 0.743));
+    height: 60px;
+    filter: drop-shadow(0px 5px 10px rgba(152, 152, 152, 0.248));
 }
 
 
 .btn_go {
     font-size: 20px;
-    background: rgb(214, 214, 214);
+    background: #d6d6d6;
     color: #141e26;
     padding: 0.3em 1em;
-    padding-left: 5em;
+    padding-left: 4.5em;
     display: flex;
     align-items: center;
     border: none;
@@ -108,16 +139,6 @@ nav {
 
 .btn_go:hover span {
     transform: translateX(8em);
-}
-
-@keyframes fly-1 {
-    from {
-        transform: translateY(0.0em);
-    }
-
-    to {
-        transform: translateY(0.1em);
-    }
 }
 
 h4 {

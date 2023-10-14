@@ -1,7 +1,7 @@
 const notificationInfo = (text_noti) => {
     Toastify({
         text: text_noti,
-        duration: 10000,
+        duration: 7000,
         style: {
             background: "#39cae8",
         }
@@ -11,7 +11,7 @@ const notificationInfo = (text_noti) => {
 const notificationDanger = (text_noti) => {
     Toastify({
         text: text_noti,
-        duration: 10000,
+        duration: 5000,
         style: {
             background: '#ed2e2e',
         }
@@ -21,7 +21,7 @@ const notificationDanger = (text_noti) => {
 const notificationWarning = (text_noti) => {
     Toastify({
         text: text_noti,
-        duration: 10000,
+        duration: 5000,
         style: {
             background: '#d0c826',
         }

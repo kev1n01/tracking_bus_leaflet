@@ -1,11 +1,15 @@
 //init Leaflet 
 var map = L.map('map', {
     zoomControl: true,
-}).setView([-9.9097017, -76.2376833], 14)
+}).setView([-9.914953, -76.230911], 14)
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+// L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//     maxZoom: 19,
+//     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+// }).addTo(map)
+
+L.tileLayer('https://api.mapbox.com/styles/v1/mantequillita21/clnqi8rln00a501qjexvxd4bx/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWFudGVxdWlsbGl0YTIxIiwiYSI6ImNrbXh4MGZwOTAzMGwydnBnNXV4NG91bjMifQ.wljneJmPr3jJUSgzLB6YTg', {
+    maxZoom: 18,
 }).addTo(map)
 
 
@@ -29,7 +33,7 @@ logoutButton.button.style.width = '60px'
 let marker, circle, data_drivers
 let alias = sessionStorage.getItem('alias')
 let driver_id = sessionStorage.getItem('driver_id')
-let conductorMarkers = {}
+let driverMarkers = {}
 
 const bus_icon = L.icon({
     iconUrl: '../img/bus_icon.png',
@@ -109,8 +113,8 @@ const markerPosition = (pos = [], icon = null, map) => {
     return L.marker(pos, { icon: icon }).addTo(map)
 }
 //function to add popup
-const popupMarkerPosition = (data, marker) => {
-    marker.bindPopup(data)
+const popupMarkerPosition = (data, marker_me) => {
+    marker_me.bindPopup(data)
 }
 
 //function for draw points with circlemarker
@@ -146,25 +150,34 @@ function deleteMarkers() {
         }
     });
 }
-
+// delete markers that dont match to data response getDrivers 
+function deleteMarkersNotFound(data, driverMarkers) {
+    for (const driverId in driverMarkers) {
+        const driverNotFound = data.find(driver => driver.id === parseInt(driverId));
+        if (!driverNotFound) {
+            map.removeLayer(driverMarkers[driverId]);
+            delete driverMarkers[driverId];
+        }
+    }
+}
 //function get drivers
 function getDriversApi() {
     axios.get(BASE_URL + 'drivers')
         .then(function (res) {
             data_drivers = res.data.data
-            if (data_drivers.length === 0) {
-                deleteMarkers()
-            }
+
             let filter_data = data_drivers.filter(el => el.id !== parseInt(driver_id))
-            // console.log(filter_data);
+
+            deleteMarkersNotFound(filter_data, driverMarkers)
+
             filter_data.forEach(driver => {
                 let driverId = driver.id
-                if (conductorMarkers[driverId]) {
-                    conductorMarkers[driverId].setLatLng([driver.lat, driver.lng])
+                if (driverMarkers[driverId]) {
+                    driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
-                    const marker = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
-                    conductorMarkers[driverId] = marker
-                    popupMarkerPosition(driver.alias, marker)
+                    const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
+                    driverMarkers[driverId] = marker_new
+                    popupMarkerPosition(driver.alias, marker_new)
                 }
             })
         }).catch(function (error) {
@@ -189,7 +202,7 @@ if (alias) {
     function successCallback(pos) {
         const values = getValuesGeolocation(pos)
         if (marker) {
-            map.removeLayer(marker)
+            marker.setLatLng([values.lat, values.lng])
         }
         marker = markerPosition([values.lat, values.lng], bus_icon, map)
         popupMarkerPosition('Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed, marker)
@@ -219,6 +232,7 @@ function deleteDriver(id) {
 }
 
 const endDriver = () => {
+    map.removeLayer(marker)
     deleteDriver(driver_id)
 }
 if (driver_id !== null) {
