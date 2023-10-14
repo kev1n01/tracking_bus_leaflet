@@ -3,7 +3,7 @@ cite {
     display: block;
     white-space: nowrap;
     border-right: 2px solid;
-    width: 22ch;
+    width: 23ch;
     animation: typing 5s steps(21), blink .5s step-end infinite alternate;
     overflow: hidden;
 }
@@ -38,55 +38,6 @@ cite {
 
 .no_underline {
     text-decoration: none;
-}
-
-
-#label_switch {
-    width: 60px;
-    height: 30px;
-    position: relative;
-    display: block;
-    background: #ebebeb;
-    border-radius: 11px;
-    box-shadow: inset 0px 5px 7px rgba(0, 0, 0, 0.4), inset 0px -5px 7px rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-}
-
-#label_switch:after {
-    content: "";
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background: linear-gradient(120deg, #ffcc89, #d8860b);
-    border-radius: 20px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-}
-
-#input_switch {
-    width: 0;
-    height: 0;
-    visibility: hidden;
-}
-
-#input_switch:checked+#label_switch {
-    background: #242424;
-}
-
-#input_switch:checked+#label_switch:after {
-    left: 55px;
-    transform: translateX(-100%);
-    background: linear-gradient(120deg, #777, #3a3a3a);
-}
-
-#label_switch,
-#label_switch:after {
-    transition: 0.3s
-}
-
-#label_switch:active:after {
-    width: 5px;
 }
 
 nav {

@@ -1,16 +1,3 @@
-// const themeToggle = document.getElementById("darkmode_toggle");
-// const $article = document.querySelector('article')
-
-// themeToggle.addEventListener("change", () => {
-//     if (themeToggle.checked) {
-//         $article.removeAttribute('data-theme', 'light')
-//         $article.setAttribute('data-theme', 'dark')
-//     } else {
-//         document.body.style.backgroundColor = "#f7f7f7";
-//     }
-// });
-const BASE_URL = 'http://127.0.0.1:8000/api/'
-
 let $driver_alias = document.getElementById('driver_alias')
 function saveAsDriver() {
     if ($driver_alias.value != '') {
@@ -18,14 +5,13 @@ function saveAsDriver() {
         axios.post(BASE_URL + 'drivers', {
             alias: $driver_alias.value,
         }).then(function (res) {
-            console.log();
             sessionStorage.setItem('driver_id', res.data.id)
             redirect()
         }).catch(function (error) {
             console.log(error);
         })
     } else {
-        notificationDanger('Ingrese un alias por favor')
+        notificationDanger('El alias es obligatorio')
     }
 }
 function redirect() {
@@ -61,3 +47,4 @@ const closeModal = () => {
 $button_close.addEventListener('click', function () {
     closeModal()
 });
+console.log('%cSolo mirar no, tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');

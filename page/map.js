@@ -1,51 +1,54 @@
 //init Leaflet 
-var map = L.map('map').setView([-9.9097017, -76.2376833], 14);
+var map = L.map('map', {
+    zoomControl: true,
+}).setView([-9.9097017, -76.2376833], 14)
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+}).addTo(map)
 
-// L.easyButton({
-//     states: [
-//         {
-//             icon: '<span class="star">&starf;</span>',
-//             onClick: function () { alert('you just clicked the html entity \&starf;'); }
-//         }
-//     ]
-// }).addTo(map);
 
-let marker, circle, data_drivers, bus_marker2 = [], bus_marker
+const logoutButton = L.easyButton({
+    states: [
+        {
+            stateName: 'show-tooltip',
+            title: 'Salir',
+            icon: '<strong>Salir</strong>',
+            onClick: function () {
+                endDriver()
+                control.state('show-tooltip')
+            }
+        }
+    ]
+})
+logoutButton.button.style.backgroundColor = 'red'
+logoutButton.button.style.color = 'white'
+logoutButton.button.style.width = '60px'
+
+let marker, circle, data_drivers
 let alias = sessionStorage.getItem('alias')
 let driver_id = sessionStorage.getItem('driver_id')
+let conductorMarkers = {}
 
-console.log(alias);
-console.log(driver_id);
-const BASE_URL = 'http://127.0.0.1:8000/api/'
 const bus_icon = L.icon({
     iconUrl: '../img/bus_icon.png',
     iconSize: [40, 40],
-});
+})
+
 const bus_icon_2 = L.icon({
     iconUrl: '../img/bus_icon_2.png',
     iconSize: [40, 40],
-});
+})
+
 const points = [
-    { lat: -9.9224276, lng: -76.2326591 }, //ovalo pabletich
-    { lat: -9.9308852, lng: -76.2340732 }, //puente burgos
-    { lat: -9.927321, lng: -76.236112 },
-    { lat: -9.909679, lng: -76.228947 }, //huayopampa
-    { lat: -9.925091, lng: -76.232970 }, //llicua
-    { lat: -9.898520, lng: -76.222629 }, //jancao
-    { lat: -9.891078, lng: -76.217930 }, //udh
-]
-const bus_coords = [
-    { lat: -9.927321, lng: -76.236112, alias: 'bus1' },
-    { lat: -9.9224276, lng: -76.2326591, alias: 'bus2' },
-    { lat: -9.909679, lng: -76.228947, alias: 'bus3' },
-    { lat: -9.9224276, lng: -76.2326591, alias: 'bus4' },
-    { lat: -9.9224276, lng: -76.2326591, alias: 'bus5' },
-    { lat: -9.891078, lng: -76.217930, alias: 'bus6' },
+    { lat: -9.9224276, lng: -76.2326591, alias: "Ovalo pabletich" },
+    { lat: -9.9308852, lng: -76.2340732, alias: "Puente burgos" },
+    { lat: -9.927321, lng: -76.236112, alias: "Hospital de Huánuco" },
+    { lat: -9.909679, lng: -76.228947, alias: "Huayopampa" },
+    { lat: -9.925091, lng: -76.232970, alias: "Llicua" },
+    { lat: -9.898520, lng: -76.222629, alias: "Jancao" },
+    { lat: -9.891078, lng: -76.217930, alias: "UDH" },
 ]
 
 const routes_start = [
@@ -99,39 +102,36 @@ const getValuesGeolocation = (pos) => {
         lng: pos.coords.longitude,
         accuracy: pos.coords.accuracy,
         speed: pos.coords.speed,
-        alt: pos.coords.altitude
     }
 }
+
 const markerPosition = (pos = [], icon = null, map) => {
     return L.marker(pos, { icon: icon }).addTo(map)
 }
+//function to add popup
 const popupMarkerPosition = (data, marker) => {
     marker.bindPopup(data)
 }
+
 //function for draw points with circlemarker
-const circleMarkerPosition = (pos, map, radius = null) => {
-    return L.circleMarker([pos.lat, pos.lng], { radius: radius ?? 15 }).addTo(map)
+const circleMarkerPosition = (pos = [], map, radius = null) => {
+    return L.circleMarker(pos, { radius: radius ?? 15 }).addTo(map)
 }
+
 // function for draw line Leaflet
 const polyLinePosition = (coords, map, color) => {
-    return L.polyline(coords, { color: color }).addTo(map);
+    return L.polyline(coords, { color: color }).addTo(map)
 }
 
-
+//drawing points 
 points.forEach(el => {
-    marker_circle = circleMarkerPosition(el, map, 30)
-    popupMarkerPosition('paradero', marker_circle)
-});
-
-// bus_coords.forEach(el => {
-//     bus_marker = markerPosition([el.lat, el.lng], bus_icon, map)
-//     popupMarkerPosition(el.alias, bus_marker)
-// });
+    marker_circle = circleMarkerPosition([el.lat, el.lng], map, 30)
+    popupMarkerPosition(el.alias, marker_circle)
+})
 
 //draw line routes 
 polyLinePosition(routes_start, map, 'red')
 polyLinePosition(routes_end, map, 'blue')
-
 
 // get a coordenate each 2 seconds
 const options = {
@@ -139,73 +139,89 @@ const options = {
     timeout: 2000,
 }
 
+function deleteMarkers() {
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+}
+
 //function get drivers
 function getDriversApi() {
     axios.get(BASE_URL + 'drivers')
         .then(function (res) {
             data_drivers = res.data.data
-            for (let i = 0; i <= data_drivers.length; i++) {
-                var m = markerPosition([data_drivers[i].lat, data_drivers[i].lng], bus_icon_2, map)
-                bus_marker2.push(m)
-                popupMarkerPosition(data_drivers[i].alias, m)
-                // bus_marker2[i].setLatLng([data_drivers[i].lat, data_drivers[i].lng])
-
+            if (data_drivers.length === 0) {
+                deleteMarkers()
             }
+            let filter_data = data_drivers.filter(el => el.id !== parseInt(driver_id))
+            // console.log(filter_data);
+            filter_data.forEach(driver => {
+                let driverId = driver.id
+                if (conductorMarkers[driverId]) {
+                    conductorMarkers[driverId].setLatLng([driver.lat, driver.lng])
+                } else {
+                    const marker = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
+                    conductorMarkers[driverId] = marker
+                    popupMarkerPosition(driver.alias, marker)
+                }
+            })
         }).catch(function (error) {
-            // console.log(error);
+            // console.log(error)
         })
-    if (bus_marker2.length > 0) {
-        for (let b = 0; b < bus_marker2.length; b++)
-            map.removeLayer(bus_marker2[b])
-    }
 }
+setInterval(getDriversApi, 2000)
 
-function call() {
-    setInterval(getDriversApi, 2000)
-}
-call()
 function updateMyCoordenates(lat_driver, lng_driver, id) {
-    axios.post(BASE_URL + 'driverupdate/' + id, {
+    axios.put(BASE_URL + 'drivers/' + id, {
         lat: lat_driver,
         lng: lng_driver
     })
         .then(function (res) {
-            // console.log(res.data);
+            // console.log(res.data)
         }).catch(function (error) {
-            console.log(error);
+            console.log(error)
         })
 }
 if (alias) {
     navigator.geolocation.watchPosition(successCallback, errorCallback, options)
     function successCallback(pos) {
         const values = getValuesGeolocation(pos)
-        var data = 'lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Accuary: ' + values.accuracy + '<br>Speed: ' + values.speed + '<br>Altitude: ' + values.alt
         if (marker) {
             map.removeLayer(marker)
         }
         marker = markerPosition([values.lat, values.lng], bus_icon, map)
-        popupMarkerPosition(data, marker)
+        popupMarkerPosition('Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed, marker)
         updateMyCoordenates(values.lat, values.lng, driver_id)
     }
 
     function errorCallback(err) {
-        err.code === 1 ? notification('Por favor, permite acceder a tu ubicación desde la aplicación \n Activa el gps de tu celular') : notification('No sé puede obtener tu ubicación, intentelo nuevamente', 'danger')
+        console.log(err)
+        err.code === 1 ? notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular')
+            : notificationWarning('No sé puede obtener tu ubicación, espere un momento')
     }
 }
 
 function deleteDriver(id) {
     axios.delete(BASE_URL + 'drivers/' + id)
         .then(function (res) {
-            console.log(res.data);
+            if (res.status === 200) {
+                sessionStorage.removeItem('driver_id')
+                sessionStorage.removeItem('alias')
+                location.href = "../index.html"
+            } else {
+                notificationInfo('Hay un problema al cerrar sesión')
+            }
         }).catch(function (error) {
-            console.log(error);
+            console.log(error)
         })
 }
 
 const endDriver = () => {
     deleteDriver(driver_id)
-    sessionStorage.removeItem('driver_id')
-    sessionStorage.removeItem('alias')
-
-    location.href = "../index.html"
 }
+if (driver_id !== null) {
+    logoutButton.addTo(map)
+}
+console.log('%cSolo mirar no, tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');
