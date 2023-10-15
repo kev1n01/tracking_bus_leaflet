@@ -1,5 +1,3 @@
-
-
 let $driver_alias = document.getElementById('driver_alias')
 function saveAsDriver() {
     if ($driver_alias.value != '') {
@@ -8,7 +6,7 @@ function saveAsDriver() {
             alias: $driver_alias.value,
         }).then(function (res) {
             localStorage.setItem('driver_id', res.data.id)
-            redirect()
+            redirectToMap()
         }).catch(function (error) {
             console.log(error);
         })
@@ -16,14 +14,14 @@ function saveAsDriver() {
         notificationDanger('El alias es obligatorio')
     }
 }
-function redirect() {
+function redirectToMap() {
     location.href = "./page/map.html"
 }
 
 let $driver_id = localStorage.getItem('driver_id')
 
 if ($driver_id != null) {
-    redirect()
+    notificationDanger('Recuerda cerrar sesión antes de salir 😉')
 }
 
 function isDriverOrStudent(type_user) {
@@ -32,7 +30,7 @@ function isDriverOrStudent(type_user) {
             openModal()
             break;
         case 'student':
-            redirect()
+            redirectToMap()
             break;
     }
 }
@@ -44,7 +42,8 @@ const openModal = () => {
     $dialog.setAttribute('open', 'open')
 }
 $btn_driver.addEventListener('click', function () {
-    isDriverOrStudent('driver')
+    console.log($driver_id);
+    $driver_id != null ? redirectToMap() : isDriverOrStudent('driver')
 });
 
 const closeModal = () => {
@@ -56,13 +55,14 @@ $button_close.addEventListener('click', function () {
 });
 console.log('%cSolo mirar, no tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;')
 
-
 const $toggle = document.getElementById('toggle')
 const $html = document.querySelector('html')
 const $nav = document.querySelector('nav')
 const $h4 = document.querySelector('h4')
 const $btn_go = document.getElementById('btn_go')
 const $svg = document.getElementById('Layer_1')
+const $code = document.getElementById('code')
+const $code2 = document.getElementById('code2')
 let $theme_init = localStorage.getItem('theme')
 switch ($theme_init) {
     case 'light':
@@ -70,6 +70,8 @@ switch ($theme_init) {
         $btn_go.style.color = '#ebebeb'
         $svg.style.fill = '#ebebeb'
         $h4.style.color = '#264161'
+        $code.style.color = '#264161'
+        $code2.style.color = '#264161'
         $nav.style.background = 'hsl(205, 20%, 94%)'
         $toggle.classList.add('active')
         $html.setAttribute('data-theme', 'light')
@@ -79,6 +81,8 @@ switch ($theme_init) {
         $btn_go.style.color = '#141e26'
         $svg.style.fill = '#141e26'
         $h4.style.color = '#dadada'
+        $code.style.color = '#ebebeb'
+        $code2.style.color = '#ebebeb'
         $nav.style.background = '#141e26'
         $html.setAttribute('data-theme', 'dark')
         break
@@ -94,6 +98,8 @@ $toggle.addEventListener('click', () => {
         $btn_go.style.color = '#141e26'
         $svg.style.fill = '#141e26'
         $h4.style.color = '#dadada'
+        $code.style.color = '#ebebeb'
+        $code2.style.color = '#ebebeb'
         $nav.style.background = '#141e26'
         $toggle.classList.remove('active')
         $html.setAttribute('data-theme', 'dark')
@@ -102,6 +108,8 @@ $toggle.addEventListener('click', () => {
         $btn_go.style.background = '#264161'
         $btn_go.style.color = '#ebebeb'
         $svg.style.fill = '#ebebeb'
+        $code.style.color = '#264161'
+        $code2.style.color = '#264161'
         $h4.style.color = '#264161'
         $nav.style.background = 'hsl(205, 20%, 94%)'
         $toggle.classList.add('active')

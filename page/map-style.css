@@ -1,15 +1,18 @@
-#map {
-    height: 701px
-}
-
 body {
     padding: 0;
     margin: 0;
 }
 
+html,
+body,
+#map {
+    height: 100%;
+    width: 100vw;
+}
+
 #description {
     position: absolute;
-    top: 300px;
+    top: 200px;
     left: 10px;
     background-color: white;
     border-radius: 2%;

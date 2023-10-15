@@ -1,7 +1,10 @@
 //init Leaflet 
 var map = L.map('map', {
-    zoomControl: true,
+    zoomControl: false,
 }).setView([-9.914953, -76.230911], 14)
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map)
 
 const styleDefault = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -18,6 +21,7 @@ theme === 'dark' ? styleDark.addTo(map) : styleDefault.addTo(map)
 
 
 const logoutButton = L.easyButton({
+    position: 'bottomright',
     states: [
         {
             stateName: 'show-tooltip',
@@ -39,7 +43,7 @@ let alias = localStorage.getItem('alias')
 let driver_id = localStorage.getItem('driver_id')
 let driverMarkers = {}
 if (driver_id != null) {
-    notificationDanger('Cierra sesión si quieres volver')
+    notificationDanger('Recuerda cerrar sesión antes de salir 😉')
 }
 
 const legend = L.control.Legend({
@@ -93,7 +97,14 @@ const bus_icon_2 = L.icon({
     iconUrl: '../img/bus_icon_2.png',
     iconSize: [40, 40],
 })
-
+const soul_icon = L.icon({
+    iconUrl: '../img/soul_icon.png',
+    iconSize: [40, 40],
+});
+const soul_icon_2 = L.icon({
+    iconUrl: '../img/soul_icon_2.png',
+    iconSize: [40, 40],
+});
 const points = [
     { lat: -9.9224276, lng: -76.2326591, alias: "Ovalo pabletich" },
     { lat: -9.9308852, lng: -76.2340732, alias: "Puente burgos" },
@@ -148,6 +159,30 @@ const routes_end = [
     ]
 
 ]
+
+L.control.locate({
+    position: 'bottomright',
+    drawCircle: true,
+    circleStyle: {
+        fillColor: '#f41e1e',
+        radius: 0.5,
+        fillOpacity: 0.5,
+        stroke: "rgb(51, 136, 255)",
+    },
+    flyTo: true,
+    markerClass: L.marker,
+    markerStyle: {
+        icon: soul_icon_2
+    },
+    showPopup: true,
+    strings: {
+        title: "Mostrar mi ubicación",
+        popup: "Soy yo xd"
+    },
+    onLocationError: function (err) {
+        notificationInfo("No se puede obtener tu ubicacion, asegurate de darle permiso a la aplicación y activar el gps de tu dispositivo")
+    },
+}).addTo(map)
 
 const getValuesGeolocation = (pos) => {
     return {
@@ -304,8 +339,7 @@ if (alias) {
     }
 
     function errorCallback(err) {
-        err.code === 1 ? notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular')
-            : notificationWarning('No sé puede obtener tu ubicación, espere un momento')
+        err.code === 1 ?? notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular')
     }
 }
 

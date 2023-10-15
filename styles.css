@@ -104,7 +104,12 @@ nav {
 }
 
 .f-l {
-    font-size: 1em;
+    font-size: 0.9em;
+    color: #ebebeb;
+}
+
+.f-l b {
+    font-weight: bold;
 }
 
 .mb-0 {
