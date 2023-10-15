@@ -35,7 +35,7 @@ cite {
     display: block;
     white-space: nowrap;
     border-right: 2px solid;
-    width: 23ch;
+    width: 26ch;
     animation: typing 5s steps(21), blink .5s step-end infinite alternate;
     overflow: hidden;
 }

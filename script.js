@@ -64,7 +64,7 @@ switch ($theme_init) {
         $svg.style.fill = '#ebebeb'
         $h4.style.color = '#264161'
         $nav.style.background = 'hsl(205, 20%, 94%)'
-        $toggle.classList.toggle('active')
+        $toggle.classList.add('active')
         $html.setAttribute('data-theme', 'light')
         break;
     case 'dark':
@@ -97,7 +97,7 @@ $toggle.addEventListener('click', () => {
         $svg.style.fill = '#ebebeb'
         $h4.style.color = '#264161'
         $nav.style.background = 'hsl(205, 20%, 94%)'
-        $toggle.classList.toggle('active')
+        $toggle.classList.add('active')
         $html.setAttribute('data-theme', 'light')
         localStorage.setItem('theme', 'light')
     }

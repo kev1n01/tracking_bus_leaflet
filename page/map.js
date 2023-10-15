@@ -3,15 +3,58 @@ var map = L.map('map', {
     zoomControl: true,
 }).setView([-9.914953, -76.230911], 14)
 
-// L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//     maxZoom: 19,
-//     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-// }).addTo(map)
+const styleDefault = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+})
 
-L.tileLayer('https://api.mapbox.com/styles/v1/mantequillita21/clnqi8rln00a501qjexvxd4bx/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWFudGVxdWlsbGl0YTIxIiwiYSI6ImNrbXh4MGZwOTAzMGwydnBnNXV4NG91bjMifQ.wljneJmPr3jJUSgzLB6YTg', {
+const styleDark = L.tileLayer(MAP_DARK, {
     maxZoom: 18,
-}).addTo(map)
+})
 
+var theme = localStorage.getItem('theme')
+
+theme === 'dark' ? styleDark.addTo(map) : styleDefault.addTo(map)
+
+const legend = L.control.Legend({
+    position: "bottomleft",
+    collapsed: false,
+    symbolWidth: 24,
+    opacity: 1,
+    column: 2,
+    title: 'Leyenda',
+    legends: [{
+        label: "Buses",
+        type: "image",
+        url: "../img/bus_icon_2.png",
+    }, {
+        label: "Tu bus",
+        type: "image",
+        url: "../img/bus_icon.png"
+    }, {
+        label: "Paraderos",
+        type: "circle",
+        radius: 6,
+        stroke: "rgb(51, 136, 255)",
+        fillColor: "rgb(51, 136, 255)",
+        fillOpacity: 0.4,
+        weight: 2,
+    },
+    {
+        label: "Ruta salida",
+        type: "polyline",
+        color: "#FF0000",
+        fillColor: "#FF0000",
+        weight: 2,
+    }, {
+        label: "Ruta retorno",
+        type: "polyline",
+        color: "#0000FF",
+        fillColor: "#0000FF",
+        weight: 2
+    }]
+})
+    .addTo(map);
 
 const logoutButton = L.easyButton({
     states: [
@@ -143,13 +186,6 @@ const options = {
     timeout: 2000,
 }
 
-function deleteMarkers() {
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
-    });
-}
 // delete markers that dont match to data response getDrivers 
 function deleteMarkersNotFound(data, driverMarkers) {
     for (const driverId in driverMarkers) {
@@ -159,6 +195,34 @@ function deleteMarkersNotFound(data, driverMarkers) {
             delete driverMarkers[driverId];
         }
     }
+}
+
+function getDistanceToPoints(coords) {
+    let rows = []
+    points.forEach(p => {
+        let km = distanceInKmBetweenEarthCoordinates(coords[0], coords[1], p.lat, p.lng)
+        rows.push('A ' + km.toFixed(1) + ' km del paradero ' + p.alias)
+    })
+    return rows
+}
+
+function degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+    var earthRadiusKm = 6371;
+
+    var dLat = degreesToRadians(lat2 - lat1);
+    var dLon = degreesToRadians(lon2 - lon1);
+
+    lat1 = degreesToRadians(lat1);
+    lat2 = degreesToRadians(lat2);
+
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return earthRadiusKm * c;
 }
 //function get drivers
 function getDriversApi() {
@@ -175,9 +239,32 @@ function getDriversApi() {
                 if (driverMarkers[driverId]) {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
-                    const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
+                    const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map).on('click', () => {
+                        const description = document.getElementById('description')
+                        description.style.display = 'block'
+                        let ul = document.getElementById('text_info')
+                        while (ul.firstChild) {
+                            ul.removeChild(ul.firstChild);
+                        }
+
+                        setTimeout(() => {
+                            description.classList.add('fade-out')
+                            setTimeout(() => {
+                                description.classList.remove('fade-out')
+                                description.style.display = 'none'
+                            }, 500)
+                        }, 10000)
+
+                        let info = getDistanceToPoints([driver.lat, driver.lng])
+                        info.forEach(row => {
+                            const el_li = document.createElement('li')
+                            el_li.textContent = row
+                            ul.appendChild(el_li)
+                        })
+                    })
                     driverMarkers[driverId] = marker_new
-                    popupMarkerPosition(driver.alias, marker_new)
+                    let data_show = 'Coordenadas: ' + driver.lat + ', ' + driver.lng + '<br>Alias: ' + driver.alias
+                    popupMarkerPosition(data_show, marker_new)
                 }
             })
         }).catch(function (error) {
@@ -232,10 +319,11 @@ function deleteDriver(id) {
 }
 
 const endDriver = () => {
-    map.removeLayer(marker)
     deleteDriver(driver_id)
 }
+
 if (driver_id !== null) {
     logoutButton.addTo(map)
 }
+
 console.log('%cSolo mirar, no tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');
