@@ -38,9 +38,8 @@ let marker, circle, data_drivers
 let alias = localStorage.getItem('alias')
 let driver_id = localStorage.getItem('driver_id')
 let driverMarkers = {}
-
 if (driver_id != null) {
-    notificationDanger('Si quiere volver primero cierra sesión')
+    notificationDanger('Cierra sesión si quieres volver')
 }
 
 const legend = L.control.Legend({
