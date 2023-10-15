@@ -77,26 +77,38 @@ nav {
     padding-right: 30px;
 }
 
-.btn_driver {
-    background-color: #3c7c74;
+#btn_driver {
+    margin-bottom: 0 !important;
+    background-color: #157a63;
     color: #ffff;
     border: 1px solid #ebebeb;
+    height: 90px;
 }
 
-.btn_driver:hover {
+#btn_driver:hover {
     transform: translateY(-4px) translateX(-2px);
     box-shadow: 5px 8px 0 0 rgb(255, 255, 255);
 }
 
-.btn_student {
-    background-color: #c3b065;
+#btn_student {
+    margin-bottom: 0 !important;
+    background-color: #266793;
     color: #ffff;
     border: 1px solid #ebebeb;
+    height: 90px;
 }
 
-.btn_student:hover {
+#btn_student:hover {
     transform: translateY(-4px) translateX(-2px);
     box-shadow: 5px 8px 0 0 rgb(255, 255, 255);
+}
+
+.f-l {
+    font-size: 1em;
+}
+
+.mb-0 {
+    margin-bottom: 0;
 }
 
 .logo_img {

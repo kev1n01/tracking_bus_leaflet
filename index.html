@@ -36,23 +36,33 @@
         </ul>
     </nav>
     <main class="container pt-10 pb-10">
-        <section>
+        <section class="mb-0">
+            <div class="grid">
+                <button id="btn_student" class="mt-10 txt-center" onclick="isDriverOrStudent('student')">
+                    <strong>I'm a student! </strong>👻
+                </button>
+                <button id="btn_driver" class="mt-10 txt-center">
+                    <strong>I'm a driver!</strong> 🚍
+                </button>
+            </div>
+        </section>
+        <section class="mb-0">
             <blockquote>
                 <p class="txt-center">
                     Hola ​👋, bienvenido a UbiPoni una aplicación que te permitirá ubicar a los buses en tiempo real!
                     😎​​
                 </p>
                 <hr>
-                <code>
+                <code class="f-l">
                     <b>
                         Ingresar como estudiante:
                     </b>
                     <br>
                     <br>-> Selecionar "I'm a student"
-                    <br>-> Te redirigirá a un mapa y listo!
+                    <br>-> Te redirigirá a un mapa y listo, visualizarás la ubicación de los buses activos
                 </code>
                 <br><br>
-                <code>
+                <code class="f-l">
                     <b>
                         Ingresar como conductor: (No apto para prepagos XD)
                     </b>
@@ -63,28 +73,12 @@
                     <br>-> Si no aparece tu ubicación en el mapa, actualiza la aplicación :p
                     <br>-> Toca el boton "Salir" para cerrar sesión como conductor, y desactiva tu gps 
                 </code>
-
                 <footer>
                     <cite>Desarrollado por <kbd>@KeArnold1</kbd></cite>
                 </footer>
             </blockquote>
         </section>
-        <section>
-            <div class="grid">
-                <div>
-                    <a id="btn_student" class="no_underline" onclick="isDriverOrStudent('student')">
-                        <article class="mt-10 txt-center btn_student"><strong>I'm a student! </strong>👻</article>
-                    </a>
-                </div>
-                <div>
-                    <a id="btn_driver" class="no_underline">
-                        <article class="mt-10 txt-center btn_driver"><strong>I'm a
-                                driver!</strong> 🚍</article>
-                    </a>
 
-                </div>
-            </div>
-        </section>
     </main>
     <dialog close>
         <article>
