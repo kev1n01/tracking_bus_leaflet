@@ -16,6 +16,33 @@ var theme = localStorage.getItem('theme')
 
 theme === 'dark' ? styleDark.addTo(map) : styleDefault.addTo(map)
 
+
+const logoutButton = L.easyButton({
+    states: [
+        {
+            stateName: 'show-tooltip',
+            title: 'Salir',
+            icon: '<strong>Salir</strong>',
+            onClick: function () {
+                endDriver()
+                control.state('show-tooltip')
+            }
+        }
+    ]
+})
+logoutButton.button.style.backgroundColor = 'red'
+logoutButton.button.style.color = 'white'
+logoutButton.button.style.width = '60px'
+
+let marker, circle, data_drivers
+let alias = localStorage.getItem('alias')
+let driver_id = localStorage.getItem('driver_id')
+let driverMarkers = {}
+
+if (driver_id != null) {
+    notificationDanger('Si quiere volver primero cierra sesión')
+}
+
 const legend = L.control.Legend({
     position: "bottomleft",
     collapsed: false,
@@ -45,38 +72,18 @@ const legend = L.control.Legend({
         type: "polyline",
         color: "#FF0000",
         fillColor: "#FF0000",
+        dashArray: [10, 5],
         weight: 2,
     }, {
         label: "Ruta retorno",
         type: "polyline",
         color: "#0000FF",
         fillColor: "#0000FF",
+        dashArray: [10, 5],
         weight: 2
     }]
-})
-    .addTo(map);
+}).addTo(map)
 
-const logoutButton = L.easyButton({
-    states: [
-        {
-            stateName: 'show-tooltip',
-            title: 'Salir',
-            icon: '<strong>Salir</strong>',
-            onClick: function () {
-                endDriver()
-                control.state('show-tooltip')
-            }
-        }
-    ]
-})
-logoutButton.button.style.backgroundColor = 'red'
-logoutButton.button.style.color = 'white'
-logoutButton.button.style.width = '60px'
-
-let marker, circle, data_drivers
-let alias = sessionStorage.getItem('alias')
-let driver_id = sessionStorage.getItem('driver_id')
-let driverMarkers = {}
 
 const bus_icon = L.icon({
     iconUrl: '../img/bus_icon.png',
@@ -167,7 +174,7 @@ const circleMarkerPosition = (pos = [], map, radius = null) => {
 
 // function for draw line Leaflet
 const polyLinePosition = (coords, map, color) => {
-    return L.polyline(coords, { color: color }).addTo(map)
+    return L.polyline(coords, { color: color, smoothFactor: 10, noClip: true, lineJoin: 'round', lineCap: 'round', dashArray: '10, 5' }).addTo(map)
 }
 
 //drawing points 
@@ -241,6 +248,7 @@ function getDriversApi() {
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map).on('click', () => {
                         const description = document.getElementById('description')
+                        const p = document.getElementById('title_info')
                         description.style.display = 'block'
                         let ul = document.getElementById('text_info')
                         while (ul.firstChild) {
@@ -254,7 +262,7 @@ function getDriversApi() {
                                 description.style.display = 'none'
                             }, 500)
                         }, 10000)
-
+                        p.textContent = 'DETALLES DEL PONI: ' + driver.alias
                         let info = getDistanceToPoints([driver.lat, driver.lng])
                         info.forEach(row => {
                             const el_li = document.createElement('li')
@@ -292,12 +300,11 @@ if (alias) {
             marker.setLatLng([values.lat, values.lng])
         }
         marker = markerPosition([values.lat, values.lng], bus_icon, map)
-        popupMarkerPosition('Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed, marker)
+        popupMarkerPosition('Yo: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed, marker)
         updateMyCoordenates(values.lat, values.lng, driver_id)
     }
 
     function errorCallback(err) {
-        console.log(err)
         err.code === 1 ? notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular')
             : notificationWarning('No sé puede obtener tu ubicación, espere un momento')
     }
@@ -307,8 +314,8 @@ function deleteDriver(id) {
     axios.delete(BASE_URL + 'drivers/' + id)
         .then(function (res) {
             if (res.status === 200) {
-                sessionStorage.removeItem('driver_id')
-                sessionStorage.removeItem('alias')
+                localStorage.removeItem('driver_id')
+                localStorage.removeItem('alias')
                 location.href = "../index.html"
             } else {
                 notificationInfo('Hay un problema al cerrar sesión')

@@ -1,11 +1,13 @@
+
+
 let $driver_alias = document.getElementById('driver_alias')
 function saveAsDriver() {
     if ($driver_alias.value != '') {
-        sessionStorage.setItem('alias', $driver_alias.value)
+        localStorage.setItem('alias', $driver_alias.value)
         axios.post(BASE_URL + 'drivers', {
             alias: $driver_alias.value,
         }).then(function (res) {
-            sessionStorage.setItem('driver_id', res.data.id)
+            localStorage.setItem('driver_id', res.data.id)
             redirect()
         }).catch(function (error) {
             console.log(error);
@@ -18,6 +20,11 @@ function redirect() {
     location.href = "./page/map.html"
 }
 
+let $driver_id = localStorage.getItem('driver_id')
+
+if ($driver_id != null) {
+    redirect()
+}
 
 function isDriverOrStudent(type_user) {
     switch (type_user) {
