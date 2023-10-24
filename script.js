@@ -21,7 +21,7 @@ function redirectToMap() {
 let $driver_id = localStorage.getItem('driver_id')
 
 if ($driver_id != null) {
-    notificationDanger('Recuerda cerrar sesión antes de salir 😉')
+    notificationWarning('Recuerda salir para cerrar sesión  😉')
 }
 
 function isDriverOrStudent(type_user) {

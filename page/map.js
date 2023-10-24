@@ -42,7 +42,7 @@ let alias = localStorage.getItem('alias')
 let driver_id = localStorage.getItem('driver_id')
 let driverMarkers = {}
 if (driver_id != null) {
-    notificationWarning('Recuerda cerrar sesión antes de salir 😉')
+    notificationWarning('Recuerda salir para cerrar sesión  😉')
 }
 
 const legend = L.control.Legend({
@@ -185,6 +185,7 @@ const getValuesGeolocation = (pos) => {
         lng: pos.coords.longitude,
         accuracy: pos.coords.accuracy,
         speed: pos.coords.speed,
+        heading: pos.coords.heading,
     }
 }
 
