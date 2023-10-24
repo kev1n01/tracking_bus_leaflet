@@ -42,7 +42,7 @@ let alias = localStorage.getItem('alias')
 let driver_id = localStorage.getItem('driver_id')
 let driverMarkers = {}
 if (driver_id != null) {
-    notificationDanger('Recuerda cerrar sesión antes de salir 😉')
+    notificationWarning('Recuerda cerrar sesión antes de salir 😉')
 }
 
 const legend = L.control.Legend({
@@ -104,8 +104,8 @@ const soul_icon_2 = L.icon({
 });
 const points = [
     { lat: -9.9224276, lng: -76.2326591, alias: "Ovalo pabletich" },
-    { lat: -9.9308852, lng: -76.2340732, alias: "Puente burgos" },
-    { lat: -9.927321, lng: -76.236112, alias: "Hospital de Huánuco" },
+    { lat: -9.9308852, lng: -76.2340732, alias: "Puente Burgos" },
+    { lat: -9.927321, lng: -76.236112, alias: "Hospital Hermilio Valdizán" },
     { lat: -9.909679, lng: -76.228947, alias: "Huayopampa" },
     { lat: -9.925091, lng: -76.232970, alias: "Llicua" },
     { lat: -9.898520, lng: -76.222629, alias: "Jancao" },
@@ -175,7 +175,7 @@ L.control.locate({
         popup: "Mi ubicacion actual"
     },
     onLocationError: function (err) {
-        notificationInfo("No se puede obtener tu ubicacion, asegurate de darle permiso a la aplicación y activar el gps de tu dispositivo")
+        notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular')
     },
 }).addTo(map)
 
@@ -344,7 +344,7 @@ if (alias) {
     }
 
     function errorCallback(err) {
-        err.code === 1 ?? notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular')
+        if (err.code === 1) { notificationInfo('Por favor, permite acceder a tu ubicación desde la aplicación \n Y activa el gps de tu celular') }
     }
 }
 
