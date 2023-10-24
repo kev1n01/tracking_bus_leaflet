@@ -340,7 +340,7 @@ if (alias) {
             map.removeLayer(marker)
         }
         marker = markerPosition([values.lat, values.lng], bus_icon, map)
-        popupMarkerPosition('Yo: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed, marker)
+        popupMarkerPosition('Yo: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed + '<br>Heading: ' + values.heading, marker)
         updateMyCoordenates(values.lat, values.lng, driver_id)
     }
 
