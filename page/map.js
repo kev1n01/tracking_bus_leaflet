@@ -329,7 +329,7 @@ if (alias) {
     function successCallback(pos) {
         const values = getValuesGeolocation(pos)
         if (marker) {
-            marker.setLatLng([values.lat, values.lng])
+            map.removeLayer(marker)
         }
         marker = markerPosition([values.lat, values.lng], bus_icon, map)
         popupMarkerPosition('Yo: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed, marker)
