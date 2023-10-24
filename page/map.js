@@ -103,8 +103,8 @@ const soul_icon_2 = L.icon({
     iconSize: [40, 40],
 });
 const points = [
-    { lat: -9.9224276, lng: -76.2326591, alias: "Ovalo pabletich" },
-    { lat: -9.9308852, lng: -76.2340732, alias: "Puente Burgos" },
+    { lat: -9.9224276, lng: -76.2326591, alias: "Puente Esteban Pavletich" },
+    { lat: -9.9308852, lng: -76.2340732, alias: "Puente Señor de Burgos" },
     { lat: -9.927321, lng: -76.236112, alias: "Hospital Hermilio Valdizán" },
     { lat: -9.909679, lng: -76.228947, alias: "Huayopampa" },
     { lat: -9.925091, lng: -76.232970, alias: "Llicua" },
