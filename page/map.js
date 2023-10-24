@@ -19,7 +19,6 @@ var theme = localStorage.getItem('theme')
 
 theme === 'dark' ? styleDark.addTo(map) : styleDefault.addTo(map)
 
-
 const logoutButton = L.easyButton({
     position: 'bottomright',
     states: [
@@ -87,12 +86,10 @@ const legend = L.control.Legend({
     }]
 }).addTo(map)
 
-
 const bus_icon = L.icon({
     iconUrl: '../img/bus_icon.png',
     iconSize: [40, 40],
 })
-
 const bus_icon_2 = L.icon({
     iconUrl: '../img/bus_icon_2.png',
     iconSize: [40, 40],
@@ -114,7 +111,6 @@ const points = [
     { lat: -9.898520, lng: -76.222629, alias: "Jancao" },
     { lat: -9.891078, lng: -76.217930, alias: "UDH" },
 ]
-
 const routes_start = [
     [-9.891078, -76.217930],
     [-9.891864, -76.218033],
@@ -145,7 +141,6 @@ const routes_start = [
     [-9.926344, -76.235565],
     [-9.927250, -76.236165],
 ]
-
 const routes_end = [
     [
         [-9.927250, -76.236165],
@@ -280,32 +275,35 @@ function getDriversApi() {
                 if (driverMarkers[driverId]) {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
-                    const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map).on('click', () => {
-                        const description = document.getElementById('description')
-                        const p = document.getElementById('title_info')
-                        description.style.display = 'block'
-                        let ul = document.getElementById('text_info')
-                        while (ul.firstChild) {
-                            ul.removeChild(ul.firstChild);
-                        }
+                    const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
+                    // .on('click', () => {
+                    // const description = document.getElementById('description')
+                    // const p = document.getElementById('title_info')
+                    // description.style.display = 'block'
+                    // let ul = document.getElementById('text_info')
+                    // while (ul.firstChild) {
+                    //     ul.removeChild(ul.firstChild);
+                    // }
+                    // setTimeout(() => {
+                    //     description.classList.add('fade-out')
+                    //     setTimeout(() => {
+                    //         description.classList.remove('fade-out')
+                    //         description.style.display = 'none'
+                    //     }, 500)
+                    // }, 10000)
+                    // p.textContent = 'DETALLES DEL PONI: ' + driver.alias
+                    // let info = getDistanceToPoints([driver.lat, driver.lng])
+                    // console.log(info);
+                    // info.forEach(row => {
+                    //     const el_li = document.createElement('li')
+                    //     el_li.textContent = row
+                    //     ul.appendChild(el_li)
+                    // })
+                    // })
 
-                        setTimeout(() => {
-                            description.classList.add('fade-out')
-                            setTimeout(() => {
-                                description.classList.remove('fade-out')
-                                description.style.display = 'none'
-                            }, 500)
-                        }, 10000)
-                        p.textContent = 'DETALLES DEL PONI: ' + driver.alias
-                        let info = getDistanceToPoints([driver.lat, driver.lng])
-                        info.forEach(row => {
-                            const el_li = document.createElement('li')
-                            el_li.textContent = row
-                            ul.appendChild(el_li)
-                        })
-                    })
+                    let info = getDistanceToPoints([driver.lat, driver.lng])
                     driverMarkers[driverId] = marker_new
-                    let data_show = 'Coordenadas: ' + driver.lat + ', ' + driver.lng + '<br>Alias: ' + driver.alias
+                    let data_show = '<strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Detalles del poni: </strong> ' + driver.alias + '<br><strong>Distancias: </strong>' + info.toString()
                     popupMarkerPosition(data_show, marker_new)
                 }
             })

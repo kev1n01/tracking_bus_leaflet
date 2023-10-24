@@ -63,6 +63,7 @@ const $btn_go = document.getElementById('btn_go')
 const $svg = document.getElementById('Layer_1')
 const $code = document.getElementById('code')
 const $code2 = document.getElementById('code2')
+
 let $theme_init = localStorage.getItem('theme')
 switch ($theme_init) {
     case 'light':
