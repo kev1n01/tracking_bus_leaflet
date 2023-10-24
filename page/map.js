@@ -164,15 +164,15 @@ L.control.locate({
         fillOpacity: 0.5,
         stroke: "rgb(51, 136, 255)",
     },
-    flyTo: true,
     markerClass: L.marker,
     markerStyle: {
         icon: soul_icon_2
     },
+    toFly: true,
     showPopup: true,
     strings: {
         title: "Mostrar mi ubicación",
-        popup: "Soy yo xd"
+        popup: "Mi ubicacion actual"
     },
     onLocationError: function (err) {
         notificationInfo("No se puede obtener tu ubicacion, asegurate de darle permiso a la aplicación y activar el gps de tu dispositivo")
@@ -276,34 +276,33 @@ function getDriversApi() {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
-                    // .on('click', () => {
-                    // const description = document.getElementById('description')
-                    // const p = document.getElementById('title_info')
-                    // description.style.display = 'block'
-                    // let ul = document.getElementById('text_info')
-                    // while (ul.firstChild) {
-                    //     ul.removeChild(ul.firstChild);
-                    // }
-                    // setTimeout(() => {
-                    //     description.classList.add('fade-out')
-                    //     setTimeout(() => {
-                    //         description.classList.remove('fade-out')
-                    //         description.style.display = 'none'
-                    //     }, 500)
-                    // }, 10000)
-                    // p.textContent = 'DETALLES DEL PONI: ' + driver.alias
-                    // let info = getDistanceToPoints([driver.lat, driver.lng])
-                    // console.log(info);
-                    // info.forEach(row => {
-                    //     const el_li = document.createElement('li')
-                    //     el_li.textContent = row
-                    //     ul.appendChild(el_li)
-                    // })
-                    // })
+                        .on('click', () => {
+                            const description = document.getElementById('description')
+                            const p = document.getElementById('title_info')
+                            description.style.display = 'block'
+                            let ul = document.getElementById('text_info')
+                            while (ul.firstChild) {
+                                ul.removeChild(ul.firstChild);
+                            }
+                            // setTimeout(() => {
+                            //     description.classList.add('fade-out')
+                            //     setTimeout(() => {
+                            //         description.classList.remove('fade-out')
+                            //         description.style.display = 'none'
+                            //     }, 300)
+                            // }, 5000)
+                            p.textContent = 'Distancias de los paraderos del bus: ' + driver.alias
+                            let info = getDistanceToPoints([driver.lat, driver.lng])
+                            console.log(info);
+                            info.forEach(row => {
+                                const el_li = document.createElement('li')
+                                el_li.textContent = row
+                                ul.appendChild(el_li)
+                            })
+                        })
 
-                    let info = getDistanceToPoints([driver.lat, driver.lng])
                     driverMarkers[driverId] = marker_new
-                    let data_show = '<strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Detalles del poni: </strong> ' + driver.alias + '<br><strong>Distancias: </strong>' + info.toString()
+                    let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng
                     popupMarkerPosition(data_show, marker_new)
                 }
             })
@@ -312,7 +311,15 @@ function getDriversApi() {
         })
 }
 setInterval(getDriversApi, 2000)
-
+const button_close = document.getElementById('close')
+const description = document.getElementById('description')
+button_close.addEventListener('click', () => {
+    description.classList.add('fade-out')
+    setTimeout(() => {
+        description.classList.remove('fade-out')
+        description.style.display = 'none'
+    }, 200)
+})
 function updateMyCoordenates(lat_driver, lng_driver, id) {
     axios.put(BASE_URL + 'drivers/' + id, {
         lat: lat_driver,

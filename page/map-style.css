@@ -27,6 +27,7 @@ body,
 
 #title_info {
     font-weight: bold;
+    padding-top: 5px;
 }
 
 .fade-out {
@@ -36,4 +37,13 @@ body,
 
 .text-center {
     text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #757575;
+    height: 15px;
 }
