@@ -160,8 +160,8 @@ L.control.locate({
     drawCircle: true,
     circleStyle: {
         fillColor: '#f41e1e',
-        radius: 0.5,
-        fillOpacity: 0.5,
+        radius: 0.2,
+        fillOpacity: 0.4,
         stroke: "rgb(51, 136, 255)",
     },
     markerClass: L.marker,
