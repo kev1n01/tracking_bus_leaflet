@@ -277,30 +277,30 @@ function getDriversApi() {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
-                        .on('click', () => {
-                            const description = document.getElementById('description')
-                            const p = document.getElementById('title_info')
-                            description.style.display = 'block'
-                            let ul = document.getElementById('text_info')
-                            while (ul.firstChild) {
-                                ul.removeChild(ul.firstChild);
-                            }
-                            // setTimeout(() => {
-                            //     description.classList.add('fade-out')
-                            //     setTimeout(() => {
-                            //         description.classList.remove('fade-out')
-                            //         description.style.display = 'none'
-                            //     }, 300)
-                            // }, 5000)
-                            p.textContent = 'Distancias de los paraderos del bus: ' + driver.alias
-                            let info = getDistanceToPoints([driver.lat, driver.lng])
-                            console.log(info);
-                            info.forEach(row => {
-                                const el_li = document.createElement('li')
-                                el_li.textContent = row
-                                ul.appendChild(el_li)
-                            })
-                        })
+                        // .on('click', () => {
+                        //     const description = document.getElementById('description')
+                        //     const p = document.getElementById('title_info')
+                        //     description.style.display = 'block'
+                        //     let ul = document.getElementById('text_info')
+                        //     while (ul.firstChild) {
+                        //         ul.removeChild(ul.firstChild);
+                        //     }
+                        //     // setTimeout(() => {
+                        //     //     description.classList.add('fade-out')
+                        //     //     setTimeout(() => {
+                        //     //         description.classList.remove('fade-out')
+                        //     //         description.style.display = 'none'
+                        //     //     }, 300)
+                        //     // }, 5000)
+                        //     p.textContent = 'Distancias de los paraderos del bus: ' + driver.alias
+                        //     let info = getDistanceToPoints([driver.lat, driver.lng])
+                        //     console.log(info);
+                        //     info.forEach(row => {
+                        //         const el_li = document.createElement('li')
+                        //         el_li.textContent = row
+                        //         ul.appendChild(el_li)
+                        //     })
+                        // })
 
                     driverMarkers[driverId] = marker_new
                     let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng
