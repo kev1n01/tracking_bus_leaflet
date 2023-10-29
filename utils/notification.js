@@ -3,7 +3,7 @@ const notificationInfo = (text_noti) => {
         close: true,
         newWindow: true,
         text: text_noti,
-        duration: 7000,
+        duration: 6000,
         gravity: "top",
         style: {
             background: "#39cae8",

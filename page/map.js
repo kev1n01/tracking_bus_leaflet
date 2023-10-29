@@ -10,15 +10,12 @@ const styleDefault = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 })
-
 const styleDark = L.tileLayer(MAP_DARK, {
     maxZoom: 18,
 })
-
 var theme = localStorage.getItem('theme')
-
 theme === 'dark' ? styleDark.addTo(map) : styleDefault.addTo(map)
-
+//config button logout
 const logoutButton = L.easyButton({
     position: 'bottomright',
     states: [
@@ -33,18 +30,43 @@ const logoutButton = L.easyButton({
         }
     ]
 })
+//config button logout style
 logoutButton.button.style.backgroundColor = 'red'
 logoutButton.button.style.color = 'white'
 logoutButton.button.style.width = '60px'
+//config button reload page
+const reloadButton = L.easyButton({
+    position: 'bottomright',
+    states: [
+        {
+            stateName: 'show-tooltip',
+            title: 'Actualizar',
+            icon: '<strong>Actualizar</strong>',
+            onClick: function () {
+                location.reload()
+                control.state('show-tooltip')
+            }
+        }
+    ]
+})
+//config button reload page style
+reloadButton.button.style.backgroundColor = 'white'
+reloadButton.button.style.color = 'black'
+reloadButton.button.style.width = '90px'
+//added button reload page to map
+reloadButton.addTo(map)
 
 let marker, circle, data_drivers
+//get alias to local storage
 let alias = localStorage.getItem('alias')
+//get driver id to local storage
 let driver_id = localStorage.getItem('driver_id')
 let driverMarkers = {}
+//if ssesion is not close notificate user
 if (driver_id != null) {
     notificationWarning('Recuerda salir para cerrar sesión  😉')
 }
-
+//added legend
 const legend = L.control.Legend({
     position: "bottomleft",
     collapsed: false,
@@ -94,10 +116,6 @@ const bus_icon_2 = L.icon({
     iconUrl: '../img/bus_icon_2.png',
     iconSize: [40, 40],
 })
-const soul_icon = L.icon({
-    iconUrl: '../img/soul_icon.png',
-    iconSize: [40, 40],
-});
 const soul_icon_2 = L.icon({
     iconUrl: '../img/soul_icon_2.png',
     iconSize: [40, 40],
@@ -154,7 +172,7 @@ const routes_end = [
     ]
 
 ]
-
+//added my locate button
 L.control.locate({
     position: 'bottomright',
     drawCircle: true,
@@ -179,6 +197,7 @@ L.control.locate({
     },
 }).addTo(map)
 
+//function props the navigator.geolocation
 const getValuesGeolocation = (pos) => {
     return {
         lat: pos.coords.latitude,
@@ -188,7 +207,7 @@ const getValuesGeolocation = (pos) => {
         heading: pos.coords.heading,
     }
 }
-
+//function to add marker
 const markerPosition = (pos = [], icon = null, map) => {
     return L.marker(pos, { icon: icon }).addTo(map)
 }
@@ -196,7 +215,6 @@ const markerPosition = (pos = [], icon = null, map) => {
 const popupMarkerPosition = (data, marker_me) => {
     marker_me.bindPopup(data)
 }
-
 //function for draw points with circlemarker
 const circleMarkerPosition = (pos = [], map, radius = null) => {
     return L.circleMarker(pos, { radius: radius ?? 15 }).addTo(map)
@@ -233,7 +251,7 @@ function deleteMarkersNotFound(data, driverMarkers) {
         }
     }
 }
-
+//get distance to points
 function getDistanceToPoints(coords) {
     let rows = []
     points.forEach(p => {
@@ -242,68 +260,42 @@ function getDistanceToPoints(coords) {
     })
     return rows
 }
-
+//convert degress to randians
 function degreesToRadians(degrees) {
     return degrees * Math.PI / 180;
 }
-
+//calculate distances en kilometers
 function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
     var earthRadiusKm = 6371;
-
     var dLat = degreesToRadians(lat2 - lat1);
     var dLon = degreesToRadians(lon2 - lon1);
-
     lat1 = degreesToRadians(lat1);
     lat2 = degreesToRadians(lat2);
-
     var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return earthRadiusKm * c;
 }
-//function get drivers
+//function get drivers to api
 function getDriversApi() {
     axios.get(BASE_URL + 'drivers')
         .then(function (res) {
             data_drivers = res.data.data
-
             let filter_data = data_drivers.filter(el => el.id !== parseInt(driver_id))
-
             deleteMarkersNotFound(filter_data, driverMarkers)
-
             filter_data.forEach(driver => {
                 let driverId = driver.id
                 if (driverMarkers[driverId]) {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
-                        // .on('click', () => {
-                        //     const description = document.getElementById('description')
-                        //     const p = document.getElementById('title_info')
-                        //     description.style.display = 'block'
-                        //     let ul = document.getElementById('text_info')
-                        //     while (ul.firstChild) {
-                        //         ul.removeChild(ul.firstChild);
-                        //     }
-                        //     // setTimeout(() => {
-                        //     //     description.classList.add('fade-out')
-                        //     //     setTimeout(() => {
-                        //     //         description.classList.remove('fade-out')
-                        //     //         description.style.display = 'none'
-                        //     //     }, 300)
-                        //     // }, 5000)
-                        //     p.textContent = 'Distancias de los paraderos del bus: ' + driver.alias
-                        //     let info = getDistanceToPoints([driver.lat, driver.lng])
-                        //     console.log(info);
-                        //     info.forEach(row => {
-                        //         const el_li = document.createElement('li')
-                        //         el_li.textContent = row
-                        //         ul.appendChild(el_li)
-                        //     })
-                        // })
-
+                    let info = getDistanceToPoints([driver.lat, driver.lng])
+                    let string_info = info.map(function (el) {
+                        return '<span>' + el + '</span><br>'
+                    })
+                    let data_info = string_info.toString().replace(/,/g, "")
                     driverMarkers[driverId] = marker_new
-                    let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng
+                    let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
                     popupMarkerPosition(data_show, marker_new)
                 }
             })
@@ -311,16 +303,10 @@ function getDriversApi() {
             // console.log(error)
         })
 }
+//call funcion getDriverApi each 2s
 setInterval(getDriversApi, 2000)
-const button_close = document.getElementById('close')
-const description = document.getElementById('description')
-button_close.addEventListener('click', () => {
-    description.classList.add('fade-out')
-    setTimeout(() => {
-        description.classList.remove('fade-out')
-        description.style.display = 'none'
-    }, 200)
-})
+
+//function to update coordinates each the navigator get my pos
 function updateMyCoordenates(lat_driver, lng_driver, id) {
     axios.put(BASE_URL + 'drivers/' + id, {
         lat: lat_driver,
@@ -332,6 +318,7 @@ function updateMyCoordenates(lat_driver, lng_driver, id) {
             console.log(error)
         })
 }
+//if alias exist into local storage get my coordinates
 if (alias) {
     navigator.geolocation.watchPosition(successCallback, errorCallback, options)
     function successCallback(pos) {
@@ -340,7 +327,7 @@ if (alias) {
             map.removeLayer(marker)
         }
         marker = markerPosition([values.lat, values.lng], bus_icon, map)
-        popupMarkerPosition('Yo: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed + '<br>Heading: ' + values.heading, marker)
+        popupMarkerPosition('Mi poni: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed + '<br>Heading: ' + values.heading, marker)
         updateMyCoordenates(values.lat, values.lng, driver_id)
     }
 
