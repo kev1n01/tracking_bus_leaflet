@@ -289,15 +289,15 @@ function getDriversApi() {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
-                    let info = getDistanceToPoints([driver.lat, driver.lng])
+                    driverMarkers[driverId] = marker_new
+                }
+let info = getDistanceToPoints([driver.lat, driver.lng])
                     let string_info = info.map(function (el) {
                         return '<span>' + el + '</span><br>'
                     })
                     let data_info = string_info.toString().replace(/,/g, "")
-                    driverMarkers[driverId] = marker_new
-                    let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
+let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
                     popupMarkerPosition(data_show, marker_new)
-                }
             })
         }).catch(function (error) {
             // console.log(error)
@@ -324,9 +324,12 @@ if (alias) {
     function successCallback(pos) {
         const values = getValuesGeolocation(pos)
         if (marker) {
-            map.removeLayer(marker)
-        }
-        marker = markerPosition([values.lat, values.lng], bus_icon, map)
+marker.setLatLng([values.lat, values.lng])
+            //map.removeLayer(marker)
+        }else{
+marker = markerPosition([values.lat, values.lng], bus_icon, map)
+}
+        
         popupMarkerPosition('Mi poni: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed + '<br>Heading: ' + values.heading, marker)
         updateMyCoordenates(values.lat, values.lng, driver_id)
     }
