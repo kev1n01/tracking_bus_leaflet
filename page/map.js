@@ -292,12 +292,13 @@ let info = getDistanceToPoints([driver.lat, driver.lng])
 let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
                 let driverId = driver.id
                 if (driverMarkers[driverId]) {
-                    driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
+                    let marker_exist = driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
+popupMarkerPosition(data_show, marker_exist)
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
                     driverMarkers[driverId] = marker_new
-                }
 popupMarkerPosition(data_show, marker_new)
+                }
             })
         }).catch(function (error) {
             // console.log(error)
