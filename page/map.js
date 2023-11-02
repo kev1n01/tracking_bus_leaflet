@@ -284,6 +284,12 @@ function getDriversApi() {
             let filter_data = data_drivers.filter(el => el.id !== parseInt(driver_id))
             deleteMarkersNotFound(filter_data, driverMarkers)
             filter_data.forEach(driver => {
+let info = getDistanceToPoints([driver.lat, driver.lng])
+                    let string_info = info.map(function (el) {
+                        return '<span>' + el + '</span><br>'
+                    })
+                    let data_info = string_info.toString().replace(/,/g, "")
+let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
                 let driverId = driver.id
                 if (driverMarkers[driverId]) {
                     driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
@@ -291,13 +297,7 @@ function getDriversApi() {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
                     driverMarkers[driverId] = marker_new
                 }
-let info = getDistanceToPoints([driver.lat, driver.lng])
-                    let string_info = info.map(function (el) {
-                        return '<span>' + el + '</span><br>'
-                    })
-                    let data_info = string_info.toString().replace(/,/g, "")
-let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
-                    popupMarkerPosition(data_show, marker_new)
+popupMarkerPosition(data_show, marker_new)
             })
         }).catch(function (error) {
             // console.log(error)
