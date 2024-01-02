@@ -256,7 +256,8 @@ function getDistanceToPoints(coords) {
     let rows = []
     points.forEach(p => {
         let km = distanceInKmBetweenEarthCoordinates(coords[0], coords[1], p.lat, p.lng)
-        rows.push('A ' + km.toFixed(1) + ' km del paradero ' + p.alias)
+        let time = 60.0 * km.toFixed(1) / coords[2]
+        rows.push('A ' + km.toFixed(1) + ' km del paradero ' + p.alias + ' - ' + time.toFixed(0) + ' minutos')
     })
     return rows
 }
@@ -284,20 +285,20 @@ function getDriversApi() {
             let filter_data = data_drivers.filter(el => el.id !== parseInt(driver_id))
             deleteMarkersNotFound(filter_data, driverMarkers)
             filter_data.forEach(driver => {
-let info = getDistanceToPoints([driver.lat, driver.lng])
-                    let string_info = info.map(function (el) {
-                        return '<span>' + el + '</span><br>'
-                    })
-                    let data_info = string_info.toString().replace(/,/g, "")
-let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
+                let info = getDistanceToPoints([driver.lat, driver.lng, driver.speed])
+                let string_info = info.map(function (el) {
+                    return '<span>' + el + '</span><br>'
+                })
+                let data_info = string_info.toString().replace(/,/g, "")
+                let data_show = '<strong>Poni: </strong> ' + driver.alias + '<br><strong>Coordenadas: </strong> ' + driver.lat + ', ' + driver.lng + '<br><strong>Distancias aproximadas: </strong><br>' + data_info
                 let driverId = driver.id
                 if (driverMarkers[driverId]) {
                     let marker_exist = driverMarkers[driverId].setLatLng([driver.lat, driver.lng])
-popupMarkerPosition(data_show, marker_exist)
+                    popupMarkerPosition(data_show, marker_exist)
                 } else {
                     const marker_new = markerPosition([driver.lat, driver.lng], bus_icon_2, map)
                     driverMarkers[driverId] = marker_new
-popupMarkerPosition(data_show, marker_new)
+                    popupMarkerPosition(data_show, marker_new)
                 }
             })
         }).catch(function (error) {
@@ -308,10 +309,11 @@ popupMarkerPosition(data_show, marker_new)
 setInterval(getDriversApi, 2000)
 
 //function to update coordinates each the navigator get my pos
-function updateMyCoordenates(lat_driver, lng_driver, id) {
+function updateMyCoordenates(lat_driver, lng_driver, speed_driver, id) {
     axios.put(BASE_URL + 'drivers/' + id, {
         lat: lat_driver,
-        lng: lng_driver
+        lng: lng_driver,
+        speed: speed_driver
     })
         .then(function (res) {
             // console.log(res.data)
@@ -321,18 +323,19 @@ function updateMyCoordenates(lat_driver, lng_driver, id) {
 }
 //if alias exist into local storage get my coordinates
 if (alias) {
-    navigator.geolocation.watchPosition(successCallback, errorCallback, options)
+    var watch = navigator.geolocation.watchPosition(successCallback, errorCallback, options)
     function successCallback(pos) {
         const values = getValuesGeolocation(pos)
+        // console.log(values);
         if (marker) {
-marker.setLatLng([values.lat, values.lng])
+            marker.setLatLng([values.lat, values.lng])
             //map.removeLayer(marker)
-        }else{
-marker = markerPosition([values.lat, values.lng], bus_icon, map)
-}
-        
+        } else {
+            marker = markerPosition([values.lat, values.lng], bus_icon, map)
+        }
+
         popupMarkerPosition('Mi poni: ' + alias + '<br>Lat: ' + values.lat + '<br>Lng: ' + values.lng + '<br>Speed: ' + values.speed + '<br>Heading: ' + values.heading, marker)
-        updateMyCoordenates(values.lat, values.lng, driver_id)
+        updateMyCoordenates(values.lat, values.lng, values.speed, driver_id)
     }
 
     function errorCallback(err) {
@@ -346,6 +349,7 @@ function deleteDriver(id) {
             if (res.status === 200) {
                 localStorage.removeItem('driver_id')
                 localStorage.removeItem('alias')
+                navigator.geolocation.clearWatch(watch);
                 location.href = "../index.html"
             } else {
                 notificationInfo('Hay un problema al cerrar sesión')
@@ -363,4 +367,4 @@ if (driver_id !== null) {
     logoutButton.addTo(map)
 }
 
-console.log('%cSolo mirar, no tocar 🥲😈👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');
+console.log('%cSolo mirar, no tocar 👽', 'color: #1cfff9; background: #bd4147; font-size: 2.3em; padding: 0.25em 0.5em; margin: 1em; font-family: Helvetica; border: 2px solid white; border-radius: 0.6em; font-weight: bold; text-shadow: 1px 1px 1px #000121; font-style: italic;');
